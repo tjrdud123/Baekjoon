@@ -13,8 +13,7 @@
 #include <ctype.h>
 using namespace std;
 vector<vector<pair<int, int> > > adj;
-int nVertices;
-vector<int> dijkstra(int src) {
+vector<int> dijkstra(int src, int nVertices) {
 	int INF = 2000000000;
 	vector<int> dist(nVertices, INF);
 	dist[src] = 0;
