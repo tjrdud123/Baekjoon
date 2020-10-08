@@ -24,7 +24,7 @@ int main(void) {
         else {
             ans = max(ans, len1);
             len1 = 1;
-            cur1 = t;
+            cur1 = -1;
         }
         if(t <= cur2) {
             len2++;
@@ -33,7 +33,7 @@ int main(void) {
         else {
             ans = max(ans, len2);
             len2 = 1;
-            cur2 = t;
+            cur2 = 10;
         }
     }
     ans = max(ans, max(len1, len2));
