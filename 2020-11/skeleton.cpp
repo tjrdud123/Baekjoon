@@ -7,50 +7,54 @@
 #include <string.h>
 #include <queue>
 using namespace std;
-int N, M;
-int toNumber(char ch) {
-    return ch - 'a';
-}
-typedef struct Node {
-    Node* children[26];
-    bool isTerminal;
-    Node() {
-        for(int i = 0; i < 26; i++) children[i] = NULL;
-        isTerminal = false;
-    }
-    void insert(string& key, int idx) {
-        if(idx == key.size()) isTerminal = true;
-        else {
-            int next = toNumber(key[idx]);
-            if(children[next] == NULL) children[next] = new Node();
-            children[next]->insert(key, idx + 1);
+int N;
+int sol(int n) {
+    int INF = 987654321;
+    vector<int> dist(3000, INF);
+    dist[n] = 0;
+
+    priority_queue<pair<int, pair<int, int>>> pq;
+    pq.push(make_pair(0, make_pair(1, 0)));
+
+    while(pq.empty() == false) {
+        int cost = -pq.top().first;
+        int n = pq.top().second.first;
+        int clip = pq.top().second.second;
+        pq.pop();
+        
+
+        int nextDist = cost + 1;
+        // 1개 삭제
+        if(n > 1) {
+            int there = n - 1;
+            if(dist[there] > nextDist) {
+                dist[there] = nextDist;
+                pq.push(make_pair(-nextDist, make_pair(n - 1, clip)));
+            }
+        }
+
+        // 클립 보드 복사
+        if(n != clip) {
+            pq.push(make_pair(-nextDist, make_pair(n, n)));
+        }
+
+        // 붙여 넣기
+        if(clip > 0) {
+            int there = n + clip;
+            if(there >= 3000) continue;
+            if(dist[there] > nextDist) {
+                dist[there] = nextDist;
+                pq.push(make_pair(-nextDist, make_pair(n + clip, clip)));
+            }
         }
     }
-    Node* find(string& key, int idx) {
-        if(idx == key.size()) return this;
-        int next = toNumber(key[idx]);
-        if(children[next] == NULL) return NULL;
-        return children[next]->find(key, idx + 1);
-    }
-} Node;
+    return dist[N];
+}
 int main(void) {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
-    cin >> N >> M;
-    Node* root = new Node();
-    for(int i = 0; i < N; i++) {
-        string str;
-        cin >> str;
-        root->insert(str, 0);
-    }
-    int ans = 0;
-    for(int i = 0; i < M; i++) {
-        string str;
-        cin >> str;
-        Node* node = root->find(str, 0);
-        if(node != NULL && node->isTerminal == true) ans++;
-    }
-    cout << ans;
+    cin >> N;
+    cout << sol(1);
     return 0;
 }
